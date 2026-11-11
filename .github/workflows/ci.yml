@@ -46,8 +46,9 @@ jobs:
       # Segurança de contêineres (disciplina Docker): falha o pipeline se houver vulnerabilidade
       # CRITICAL/HIGH que JÁ TENHA correção disponível (ignore-unfixed evita bloquear por algo sem patch).
       - name: Análise de vulnerabilidades (Trivy)
-        uses: aquasecurity/trivy-action@v0.34.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
+          version: v0.76.2 # versão fixada do Trivy (a v0.69.1, padrão da action antiga, foi removida)
           image-ref: fcg/notifications-api:${{ github.sha }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true

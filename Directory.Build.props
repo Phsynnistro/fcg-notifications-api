@@ -1,0 +1,15 @@
+<Project>
+  <!--
+    Propriedades aplicadas a TODOS os projetos do repositório.
+    Centralizar aqui evita divergência entre src/ e tests/.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <!-- Imagem chiseled não tem ICU: globalização invariante reduz tamanho e evita falhas em runtime. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>

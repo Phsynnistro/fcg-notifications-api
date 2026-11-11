@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    Serviço orientado a eventos: não expõe API de negócio. Usa o Web SDK apenas para servir
+    /health/* às probes do Kubernetes (HTTP probe é mais barata e confiável que exec probe).
+  -->
+  <PropertyGroup>
+    <RootNamespace>Fcg.Notifications.Api</RootNamespace>
+    <AssemblyName>Fcg.Notifications.Api</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore Fcg.Notifications.sln
+
+      - name: Build
+        run: dotnet build Fcg.Notifications.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test Fcg.Notifications.sln -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+
+  docker:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build da imagem (sem push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true # disponibiliza a imagem no Docker local para o scan
+          tags: fcg/notifications-api:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Segurança de contêineres (disciplina Docker): falha o pipeline se houver vulnerabilidade
+      # CRITICAL/HIGH que JÁ TENHA correção disponível (ignore-unfixed evita bloquear por algo sem patch).
+      - name: Análise de vulnerabilidades (Trivy)
+        uses: aquasecurity/trivy-action@v0.34.0
+        with:
+          image-ref: fcg/notifications-api:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
